@@ -81,6 +81,15 @@
       event.target.value = '';
 
       this.render();
+    },
+    remove: function (event) {
+      var parent = event.target.parentElement.parentElement;
+      var id = parent.dataset.id;
+      var i = util.find(this.todos, function (elem) { return elem.id === id; });
+
+      this.todos.splice(i, 1);
+
+      this.render();
     }
   };
 
@@ -116,7 +125,16 @@
       this.render();
     },
     bindEvents: function () {
-      Elements.list().addEventListener('change', Events.toggle.bind(this));
+      var self = this;
+
+      Elements.list().addEventListener('change', function (event) {
+        if (event.target.className.split(' ').indexOf('toggle') > -1)
+          Events.toggle.call(self, event);
+      });
+      Elements.list().addEventListener('click', function (event) {
+        if (event.target.className.split(' ').indexOf('destroy') > -1)
+          Events.remove.call(self, event);
+      });
 
       Elements.newTodo().addEventListener('keyup', Events.add.bind(this));
     },
