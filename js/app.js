@@ -57,7 +57,17 @@
     }
   };
 
-  var Events = {};
+  var Events = {
+    toggle: function (event) {
+      var parent = event.target.parentElement.parentElement;
+      var id = parent.dataset.id;
+      var i = util.find(this.todos, function (elem) { return elem.id == id; });
+
+      this.todos[i].completed = !this.todos[i].completed;
+
+      this.render();
+    }
+  };
 
   var Elements = {
     list: function () {
@@ -75,6 +85,7 @@
   var App = {
     run: function () {
       Templates.compile();
+      this.bindEvents();
 
       this.todos = [
         {
@@ -85,6 +96,9 @@
       ];
 
       this.render();
+    },
+    bindEvents: function () {
+      Elements.list().addEventListener('change', Events.toggle.bind(this));
     },
     render: function () {
       Elements.list().innerHTML = Templates.todo(this.todos);
