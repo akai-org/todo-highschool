@@ -58,6 +58,15 @@
   };
 
   var Events = {
+    toggleAll: function (event) {
+      var checked = event.target.checked;
+
+      this.todos.forEach(function (elem) {
+        elem.completed = checked;
+      });
+
+      this.render();
+    },
     toggle: function (event) {
       var parent = event.target.parentElement.parentElement;
       var id = parent.dataset.id;
@@ -99,6 +108,9 @@
     },
     newTodo: function () {
       return this._newTodo || (this._newTodo = $('#new-todo'));
+    },
+    toggleAll: function () {
+      return this._toggleAll || (this._toggleAll = $('#toggle-all'));
     }
   };
 
@@ -131,6 +143,7 @@
       });
 
       Elements.newTodo().addEventListener('keyup', Events.add.bind(this));
+      Elements.toggleAll().addEventListener('change', Events.toggleAll.bind(this));
     },
     render: function () {
       Elements.list().innerHTML = Templates.todo(this.todos);
