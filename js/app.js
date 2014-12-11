@@ -66,12 +66,30 @@
       this.todos[i].completed = !this.todos[i].completed;
 
       this.render();
+    },
+    add: function (event) {
+      var value = event.target.value.trim();
+
+      if (event.which !== Keys.ENTER || !value) return;
+
+      this.todos.push({
+        id: util.uuid(),
+        title: value,
+        completed: false
+      });
+
+      event.target.value = '';
+
+      this.render();
     }
   };
 
   var Elements = {
     list: function () {
       return this._list || (this._list = $('#todo-list'));
+    },
+    newTodo: function () {
+      return this._newTodo || (this._newTodo = $('#new-todo'));
     }
   };
 
@@ -99,6 +117,8 @@
     },
     bindEvents: function () {
       Elements.list().addEventListener('change', Events.toggle.bind(this));
+
+      Elements.newTodo().addEventListener('keyup', Events.add.bind(this));
     },
     render: function () {
       Elements.list().innerHTML = Templates.todo(this.todos);
