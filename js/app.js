@@ -114,13 +114,7 @@
       Templates.compile();
       this.bindEvents();
 
-      this.todos = [
-        {
-          id: util.uuid(),
-          completed: false,
-          title: 'Kup mleko'
-        }
-      ];
+      this.todos = util.store('todos');
 
       this.render();
     },
@@ -140,6 +134,10 @@
     },
     render: function () {
       Elements.list().innerHTML = Templates.todo(this.todos);
+
+      Elements.newTodo().focus();
+
+      util.store('todos', this.todos);
     }
   };
 
