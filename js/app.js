@@ -130,6 +130,12 @@
 
       this.render();
     },
+    getActive: function () {
+      return this.todos.filter(function (e) { return !e.completed; });
+    },
+    getCompleted: function () {
+      return this.todos.filter(function (e) { return e.completed; });
+    },
     bindEvents: function () {
       var self = this;
 
@@ -149,6 +155,8 @@
       Elements.list().innerHTML = Templates.todo(this.todos);
 
       Elements.newTodo().focus();
+
+      Elements.toggleAll().checked = this.getActive().length === 0;
 
       util.store('todos', this.todos);
     }
