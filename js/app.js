@@ -59,13 +59,35 @@
 
   var Events = {};
 
-  var Elements = {};
+  var Elements = {
+    list: function () {
+      return this._list || (this._list = $('#todo-list'));
+    }
+  };
 
-  var Templates = {};
+  var Templates = {
+    compile: function () {
+      this.todo = Handlebars.compile($('#todo-template').innerHTML);
+      this.footer = Handlebars.compile($('#footer-template').innerHTML);
+    }
+  };
 
   var App = {
     run: function () {
-      console.log('Fill me!!!');
+      Templates.compile();
+
+      this.todos = [
+        {
+          id: util.uuid(),
+          completed: false,
+          title: 'Kup mleko'
+        }
+      ];
+
+      this.render();
+    },
+    render: function () {
+      Elements.list().innerHTML = Templates.todo(this.todos);
     }
   };
 
