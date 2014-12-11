@@ -45,13 +45,13 @@
           <a {{selected? filter 'all'}} href="#/all">All</a>
         </li>
         <li>
-          <a {{selected? filter 'active'}}href="#/active">Active</a>
+          <a {{selected? filter 'active'}} href="#/active">Active</a>
         </li>
         <li>
           <a {{selected? filter 'completed'}} href="#/completed">Completed</a>
         </li>
       </ul>
-      {{#if completedTodos}}<button id="clear-completed">Clear completed ({{completedTodos}})</button>{{/if}}
+      {{#if completed}}<button id="clear-completed">Clear completed ({{completed}})</button>{{/if}}
     </script>
   </body>
 </html>

@@ -99,6 +99,11 @@
       this.todos.splice(i, 1);
 
       this.render();
+    },
+    clearCompleted: function (event) {
+      this.todos = this.getActive();
+      this.filter = 'all';
+      this.render();
     }
   };
 
@@ -111,6 +116,9 @@
     },
     toggleAll: function () {
       return this._toggleAll || (this._toggleAll = $('#toggle-all'));
+    },
+    footer: function () {
+      return this._footer || (this._footer = $('#footer'));
     }
   };
 
@@ -128,6 +136,13 @@
 
       this.todos = util.store('todos');
 
+      Router({
+        '/:filter': function (filter) {
+          this.filter = filter;
+          this.render();
+        }.bind(this)
+      }).init('/all');
+
       this.render();
     },
     getActive: function () {
@@ -135,6 +150,16 @@
     },
     getCompleted: function () {
       return this.todos.filter(function (e) { return e.completed; });
+    },
+    getFiltered: function () {
+      switch (this.filter) {
+        case 'active':
+          return this.getActive();
+        case 'completed':
+          return this.getCompleted();
+        default:
+          return this.todos;
+      }
     },
     bindEvents: function () {
       var self = this;
@@ -148,11 +173,23 @@
           Events.remove.call(self, event);
       });
 
+      Elements.footer().addEventListener('click', function (event) {
+        if (event.target.id === 'clear-completed')
+          Events.clearCompleted.call(self, event);
+      });
+
       Elements.newTodo().addEventListener('keyup', Events.add.bind(this));
       Elements.toggleAll().addEventListener('change', Events.toggleAll.bind(this));
     },
     render: function () {
-      Elements.list().innerHTML = Templates.todo(this.todos);
+      Elements.list().innerHTML = Templates.todo(this.getFiltered());
+      Elements.footer().innerHTML = Templates.footer(function (all, active) {
+        return {
+          activeCount: active,
+          completed: (all - active),
+          filter: this.filter
+        };
+      }.call(this, this.todos.length, this.getActive().length));
 
       Elements.newTodo().focus();
 
